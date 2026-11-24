@@ -1,0 +1,563 @@
+### EVENTHUB - ACCOUNTS API DOCUMENTATION
+# VS Code REST Client (.http)
+#
+# Start server from the directory containing manage.py:
+#     python manage.py runserver
+#
+# IMPORTANT:
+# config/urls.py shows that accounts routes are included under:
+#     api/accounts/
+# Therefore every Accounts API URL below MUST use that prefix.
+#
+# Base URL:
+@baseUrl = http://127.0.0.1:8000/api/accounts
+#
+# After each login, copy that response's access token into the matching
+# variable below before running the corresponding protected profile request.
+@adminAccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQyOTIwLCJpYXQiOjE3OTU0NDI2MjAsImp0aSI6IjhlNzljMjU0NDkxYTQ0ZTI4MTU4YTY4MGJjMDczYTMxIiwidXNlcl9pZCI6IjEifQ.bX0O2wsfFspDGfY858Rm_j_Q5OiD9xhHwIAVw3KTzKg
+@attendee1AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ1MDUxLCJpYXQiOjE3OTU0NDQ3NTEsImp0aSI6Ijg2ODUxY2NiYjRlMDRlNjc4MTAyMjA5YzJmMmQ3OWZhIiwidXNlcl9pZCI6IjIifQ.s14xgbfUg12PGyfjR5-1CngwZjZtn1ulHwgvsX0gPBM
+
+@attendee2AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ0OTIwLCJpYXQiOjE3OTU0NDQ2MjAsImp0aSI6IjY5MDhkNjVjZjUwMTQxNjU4ZTY5MTc4Y2NmZTAzNDEyIiwidXNlcl9pZCI6IjIifQ.2dJH5FL7EWIGjcfkqEZbhz6l_-T3qQBeBEgWaNWGM1w.bX0O2wsfFspDGfY858Rm_j_Q5OiD9xhHwIAVw3KTzKg
+
+@organizerAccessToken = 
+
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ1MjUwLCJpYXQiOjE3OTU0NDQ5NTAsImp0aSI6Ijc4MzAyNjZhOWE3MDRiNmNiMTc5MmIxOTcyYTA3OWFhIiwidXNlcl9pZCI6IjQifQ.cTX31sJl6A00cW7pEkj5BTKWoqfKq7xyEVjdWuB7cig
+###############################################################################
+# A. REGISTRATION - PUBLIC ENDPOINTS (NO TOKEN REQUIRED)
+###############################################################################
+
+### 1. Register Attendee
+POST {{baseUrl}}/register/
+Content-Type: application/json
+
+{
+    "username": "newattendee",
+    "email": "newattendee@example.com",
+    "first_name": "New",
+    "last_name": "Attendee",
+    "password": "StrongPassword@123",
+    "phone_number": "9876543210"
+}
+
+###
+
+### 2. Register Organizer
+POST {{baseUrl}}/organizer/register/
+Content-Type: application/json
+
+{
+    "username": "neworganizer",
+    "email": "neworganizer@example.com",
+    "first_name": "New",
+    "last_name": "Organizer",
+    "password": "StrongPassword@123",
+    "phone_number": "9876543211"
+}
+
+###############################################################################
+# B. LOGIN - EXISTING ACCOUNTS
+# Use the actual password for each account.
+###############################################################################
+
+### 3. Login - Admin/staff account (application role: ATTENDEE)
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "althafjalaludeen8@gmail.com",
+    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
+}
+
+###
+
+### 4. Login - Attendee 01
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "eventuser@gmail.com",
+    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
+}
+
+###
+
+### 5. Login - Attendee 02
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "eventuser02@gmail.com",
+    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
+}
+
+###
+
+### 6. Login - Organizer
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "organizer@gmail.com",
+    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
+}
+
+###############################################################################
+# C. GET PROFILE - PROTECTED ENDPOINT
+# Replace each token variable with the access token from that account's login.
+###############################################################################
+
+### 7. Get Admin/staff account profile
+GET {{baseUrl}}/profile/
+Authorization: Bearer {{adminAccessToken}}
+
+###
+
+### 8. Get Attendee 01 profile
+GET {{baseUrl}}/profile/
+Authorization: Bearer {{attendee1AccessToken}}
+
+###
+
+### 9. Get Attendee 02 profile
+GET {{baseUrl}}/profile/
+Authorization: Bearer {{attendee2AccessToken}}
+
+###
+
+### 10. Get Organizer profile
+GET {{baseUrl}}/profile/
+Authorization: Bearer {{organizerAccessToken}}
+
+###############################################################################
+# D. UPDATE PROFILE - PROTECTED ENDPOINT
+# Example uses the attendee1 token. Change token as required.
+# email and role are read-only in the current UserProfileSerializer.
+###############################################################################
+
+### 11. Update current user's profile
+PUT {{baseUrl}}/profile/
+Content-Type: application/json
+Authorization: Bearer {{attendee1AccessToken}}
+
+{
+    "first_name": "Updated First Name",
+    "last_name": "Updated Last Name",
+    "phone_number": "9999999999"
+}
+
+###############################################################################
+# E. REFRESH JWT ACCESS TOKEN
+###############################################################################
+
+### 12. Refresh access token
+# Copy refresh from the relevant login response into @refreshToken.
+POST {{baseUrl}}/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "{{refreshToken}}"
+}
+
+###############################################################################
+# TESTING ORDER
+###############################################################################
+# 1. Run request 3, 4, 5 or 6 to log in.
+# 2. Copy the "access" value from its response into the matching token
+#    variable at the top of this file.
+# 3. Run the corresponding profile GET request.
+# 4. For profile updates, use a valid access token in request 11.
+# 5. For token refresh, copy the "refresh" value into @refreshToken.
+#
+# Token values are intentionally placeholders. Never commit real tokens or
+# passwords to source control.
+#
+# Note: These are the Accounts routes present in accounts/urls.py shared:
+# register/, organizer/register/, login/, token/refresh/, profile/.
+
+
+### API Request to register a new attendee
+POST http://127.0.0.1:8000/	/api/accounts/register/
+Content-Type: application/json
+
+{
+    "username": "attendee01",
+    "email": "attendee01@gmail.com",
+    "password": "attendee@123"
+}
+
+
+### Login - Admin Account
+
+POST http://127.0.0.1:8000/api/accounts/login/
+Content-Type: application/json
+
+{
+    "email": "althafjalaludeen8@gmail.com",
+    "password": "althaf@123"
+}
+
+
+
+### Get User Profile
+
+GET http://127.0.0.1:8000/api/accounts/profile/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQyOTIwLCJpYXQiOjE3OTU0NDI2MjAsImp0aSI6IjhlNzljMjU0NDkxYTQ0ZTI4MTU4YTY4MGJjMDczYTMxIiwidXNlcl9pZCI6IjEifQ.bX0O2wsfFspDGfY858Rm_j_Q5OiD9xhHwIAVw3KTzKg
+
+refresh token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc5NTUyOTAyMCwiaWF0IjoxNzk1NDQyNjIwLCJqdGkiOiIzNGIxMmNlZmQ1NDc0NDFhODVhNjJhYzAyZTU4ZjM4ZSIsInVzZXJfaWQiOiIxIn0.wBkmTQlF4rCXrWHXtTn_dDcrO8JxPnVht2HC0-bbqDk
+
+
+### Login in to the attendee account
+POST http://127.0.0.1:8000/api/accounts/login/
+Content-Type: application/json
+
+{
+    "email": "eventuser@gmail.com",
+    "password": "password@123"
+}
+
+### Login in to the organizer account
+POST http://127.0.0.1:8000/api/accounts/login/
+Content-Type: application/json
+
+{
+    "email": "	organizer@gmail.com",
+    "password": "password@123"
+}
+
+### Login - Attendee 02
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "eventuser02@gmail.com",
+    "password": "password@123"
+}
+
+
+### Login - Organizer
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "organizer@gmail.com",
+    "password": "password@123"
+}
+
+
+
+
+
+
+### CREATE EVENT – ORGANIZER
+
+POST http://127.0.0.1:8000/api/events/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ2NTMzLCJpYXQiOjE3OTU0NDYyMzMsImp0aSI6IjA3OTAyYzA1ZjVjNDQyMmM4NjY1MWIyNzVhYmYzYzk2IiwidXNlcl9pZCI6IjQifQ.p8JbjXtrN_ZTWzKzGxx8Ij3COAxWIy_Jjr_MVrwTopI
+Content-Type: application/json
+
+{
+    "title": "Tech Summit 2026",
+    "description": "A technology conference featuring industry experts and developers.",
+    "category": 2,
+    "venue": "Kochi Convention Centre",
+    "start_date": "2026-12-15T09:00:00+05:30",
+    "end_date": "2026-12-15T17:00:00+05:30",
+    "capacity": 200,
+    "ticket_price": "499.00"
+}
+
+
+
+### GET ALL EVENTS - ORGANIZER
+GET http://127.0.0.1:8000/api/events/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTMxMjMwLCJpYXQiOjE3OTU1MzA5MzAsImp0aSI6IjBlNWI0OGQyODIzZDRkNGE5ZjUyMTNlOWU3ZWZlYzcwIiwidXNlcl9pZCI6IjQifQ.J_-bwfFo1_EhFOz7VRALk2IUU8f6gJyGFxc3wQrRUj8
+
+### PUBLISH EVENT
+PUT http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ2OTczLCJpYXQiOjE3OTU0NDY2NzMsImp0aSI6IjdkNDhiMzU4YjU2MDRhNzRhZGEwNzlhNjFlMjVlZjIyIiwidXNlcl9pZCI6IjQifQ.otjWu18Dq1gSdX1NHF4m-_nGgYu5rnoR1I39d0uVOMg
+Content-Type: application/json
+
+{
+    "status": "PUBLISHED"
+}
+
+### GET ALL EVENTS - ATTENDEE
+GET http://127.0.0.1:8000/api/events/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ3MTA2LCJpYXQiOjE3OTU0NDY4MDYsImp0aSI6IjllZGFlY2U3NDAyNDQ3MzViMTRjZWI2YTNiNGM1OTdlIiwidXNlcl9pZCI6IjIifQ.OUj18dMwtRKhv7HuZYJn35fLAj9IydABZV-Kzm0bj-I
+
+
+### SEARCH EVENTS
+GET http://127.0.0.1:8000/api/events/?search=Tech
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ3NDUxLCJpYXQiOjE3OTU0NDcxNTEsImp0aSI6IjY5ODIwZDg4MzhiNjRhNzA5NTMxMmYyZjRhMDI2MzhmIiwidXNlcl9pZCI6IjIifQ.BKIDUpABeHOpSO9qwvDn_9wSrZssA76oalbEB-sAZ4E
+
+
+
+### FILTER BY CATEGORY
+GET http://127.0.0.1:8000/api/events/?category=2
+
+
+### FILTER BY VENUE
+GET http://127.0.0.1:8000/api/events/?venue=Kochi
+
+
+### UPCOMING EVENTS
+GET http://127.0.0.1:8000/api/events/?upcoming=true
+
+
+
+### GET ALL CATEGORIES
+GET http://127.0.0.1:8000/api/events/categories/
+
+
+### CREATE CATEGORY
+POST http://127.0.0.1:8000/api/events/categories/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDkxNDIxLCJpYXQiOjE3OTU0OTExMjEsImp0aSI6Ijc3ODg5N2RjY2Q4NTQyNmI4YzQ5Zjc0OGQxYjBiYTE1IiwidXNlcl9pZCI6IjQifQ.F2JKBhyfWtSjQW9wWVsB4_Ccx_H85tfoPU7X48jl3RM
+Content-Type: application/json
+
+{
+    "name": "Technology",
+    "description": "Technology conferences and workshops."
+}
+
+
+### UPDATE CATEGORY
+PUT http://127.0.0.1:8000/api/events/categories/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDkxNDIxLCJpYXQiOjE3OTU0OTExMjEsImp0aSI6Ijc3ODg5N2RjY2Q4NTQyNmI4YzQ5Zjc0OGQxYjBiYTE1IiwidXNlcl9pZCI6IjQifQ.F2JKBhyfWtSjQW9wWVsB4_Ccx_H85tfoPU7X48jl3RM
+Content-Type: application/json
+
+{
+    "description": "Updated category description."
+}
+
+
+
+
+### CREATE VENUE - ORGANIZER
+POST http://127.0.0.1:8000/api/venues/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTI4Nzc4LCJpYXQiOjE3OTU1Mjg0NzgsImp0aSI6IjRiOGZlOGRkMTcwODQ3YWJhOTUzZGI2ZmYxNGI5NWQyIiwidXNlcl9pZCI6IjQifQ.igaFTqMz2AIiRH0oZPtVx02cxsBx7of7POQr66fhQtU
+Content-Type: application/json
+
+{
+    "name": "Kochi Convention Centre",
+    "description": "A spacious convention centre suitable for conferences and exhibitions.",
+    "address": "Marine Drive",
+    "city": "Kochi",
+    "state": "Kerala",
+    "pincode": "682011",
+    "capacity": 1000,
+    "contact_number": "9876543210"
+}
+
+
+### GET ALL VENUES
+GET http://127.0.0.1:8000/api/venues/
+
+### GET VENUE DETAILS
+GET http://127.0.0.1:8000/api/venues/1/
+
+### UPDATE VENUE
+PUT http://127.0.0.1:8000/api/venues/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTI4Nzc4LCJpYXQiOjE3OTU1Mjg0NzgsImp0aSI6IjRiOGZlOGRkMTcwODQ3YWJhOTUzZGI2ZmYxNGI5NWQyIiwidXNlcl9pZCI6IjQifQ.igaFTqMz2AIiRH0oZPtVx02cxsBx7of7POQr66fhQtU
+Content-Type: application/json
+
+{
+    "capacity": 1200,
+    "description": "Updated convention centre with expanded seating capacity."
+}
+
+@organizerAccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTI5MzE0LCJpYXQiOjE3OTU1MjkwMTQsImp0aSI6IjRiMTBmMDMxYzk0ZjQ3OTI4ZTMxZjgyZThhNGYxZTEyIiwidXNlcl9pZCI6IjQifQ.70M5V1i-MtiUuroEhG9Ern6UXTJFV4_vpPKafJcrNsw
+@organizerRefreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc5NTYxNTQxNCwiaWF0IjoxNzk1NTI5MDE0LCJqdGkiOiJhMDcwNmNkNmEwZTY0ZmM5ODBiMmIyOGJlNjI5YTJlMyIsInVzZXJfaWQiOiI0In0.WTNhCHNfHUg001Ra4f8ISrMjcFmS6-LcuuLNtiDac1w
+
+### REFRESH ORGANIZER 1 TOKEN
+POST http://127.0.0.1:8000/api/accounts/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "{{organizerRefreshToken}}"
+}
+
+
+
+### 2. Register Organizer 2
+POST {{baseUrl}}/organizer/register/
+Content-Type: application/json
+
+{
+    "username": "neworganizer2",
+    "email": "neworganizer2@example.com",
+    "first_name": "New",
+    "last_name": "Organizer 2",
+    "password": "password@123",
+    "phone_number": "9876543211"
+}
+
+### Login - Organizer 2
+POST {{baseUrl}}/login/
+Content-Type: application/json
+
+{
+    "email": "neworganizer2@example.com",
+    "password": "password@123"
+}
+
+@organizer2AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTI5NzIyLCJpYXQiOjE3OTU1Mjk0MjIsImp0aSI6IjQxNzEwMjhiNDg3MDRiZDA4MDgxZWExZjJkZmFjMWExIiwidXNlcl9pZCI6IjUifQ.4km6iaoJStA5hsyLpkCzsbStVQlE7oh_DxaMbNAhkkk
+
+@organizer2RefreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc5NTYxNTgyMiwiaWF0IjoxNzk1NTI5NDIyLCJqdGkiOiJhYTRiZDAyYmViZTU0OWRlYWIyM2Q1OTZmNWE5YmRlZCIsInVzZXJfaWQiOiI1In0.0nWWb3JlKEvrCxd8Ezrf5losJENBZwAxZxRlBL7gWK4
+
+### REFRESH ORGANIZER 2 TOKEN
+POST http://127.0.0.1:8000/api/accounts/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "{{organizer2RefreshToken}}"
+}
+
+### UPDATE VENUE - ORGANIZER 2
+PUT http://127.0.0.1:8000/api/venues/1/
+Authorization: Bearer {{organizer2AccessToken}}
+Content-Type: application/json
+
+{
+    "capacity": 1200,
+    "description": "Updated convention centre with expanded seating capacity."
+}
+
+
+### CREATE EVENT – ORGANIZER
+
+POST http://127.0.0.1:8000/api/events/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTMxMjMwLCJpYXQiOjE3OTU1MzA5MzAsImp0aSI6IjBlNWI0OGQyODIzZDRkNGE5ZjUyMTNlOWU3ZWZlYzcwIiwidXNlcl9pZCI6IjQifQ.J_-bwfFo1_EhFOz7VRALk2IUU8f6gJyGFxc3wQrRUj8
+Content-Type: application/json
+
+{
+    "title": "Python Developer Conference 2026",
+    "description": "A conference for Python developers.",
+    "category": 2,
+    "venue": 1,
+    "start_date": "2026-12-20T09:00:00+05:30",
+    "end_date": "2026-12-20T17:00:00+05:30",
+    "capacity": 300,
+    "ticket_price": "499.00"
+}
+
+### CREATE EVENT WITH REGISTERED VENUE
+POST http://127.0.0.1:8000/api/events/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM4ODQ2LCJpYXQiOjE3OTU1Mzg1NDYsImp0aSI6ImIwYWNhNDE3MzZjYTRmNDU4MmUxMWM0NGU1ZmNiNzU3IiwidXNlcl9pZCI6IjQifQ.kVg7HNflJqvAyepy0u-hQexsUQ2A6ARwfhjxdNsZS2U
+Content-Type: application/json
+
+{
+    "title": "Python Developer Conference 2026",
+    "description": "A conference for Python developers featuring industry experts.",
+    "category": 2,
+    "venue": 1,
+    "start_date": "2026-12-20T09:00:00+05:30",
+    "end_date": "2026-12-20T17:00:00+05:30",
+    "capacity": 300,
+    "ticket_price": "499.00"
+}
+
+### GET ALL EVENTS
+GET http://127.0.0.1:8000/api/events/
+Accept-Language:application/json
+
+
+### GET ALL EVENTS - ORGANIZER
+GET http://127.0.0.1:8000/api/events/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM4ODQ2LCJpYXQiOjE3OTU1Mzg1NDYsImp0aSI6ImIwYWNhNDE3MzZjYTRmNDU4MmUxMWM0NGU1ZmNiNzU3IiwidXNlcl9pZCI6IjQifQ.kVg7HNflJqvAyepy0u-hQexsUQ2A6ARwfhjxdNsZS2U
+
+### DELETE DUPLICATE EVENT - ID 4
+DELETE http://127.0.0.1:8000/api/events/4/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM4ODQ2LCJpYXQiOjE3OTU1Mzg1NDYsImp0aSI6ImIwYWNhNDE3MzZjYTRmNDU4MmUxMWM0NGU1ZmNiNzU3IiwidXNlcl9pZCI6IjQifQ.kVg7HNflJqvAyepy0u-hQexsUQ2A6ARwfhjxdNsZS2U
+
+### FILTER EVENTS BY VENUE
+GET http://127.0.0.1:8000/api/events/?venue=Kochi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM5MzIwLCJpYXQiOjE3OTU1MzkwMjAsImp0aSI6Ijc4Mjg1N2Y3Y2FmOTRhMDJhMjhkMTAzMDhjNDBjZGJiIiwidXNlcl9pZCI6IjUifQ.VpOvTyaYdSnBzSlr7c98tEDsBnOMgGzg6-vXWngZvlc
+
+### REGISTER FOR EVENT
+POST http://127.0.0.1:8000/api/registrations/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM5ODM1LCJpYXQiOjE3OTU1Mzk1MzUsImp0aSI6ImVjNjVlOWVlYzFhYjRlOWM5MzkzZmFkOTY4MjVkYjBhIiwidXNlcl9pZCI6IjIifQ.FxvB8lSm_YlWmrLNedO2U_dBjcao251xNNuxxGDTVLA
+Content-Type: application/json
+
+{
+    "event": 1
+}
+
+
+### REBOOK CANCELLED EVENT
+POST http://127.0.0.1:8000/api/registrations/
+Authorization: Bearer {{attendee1AccessToken}}
+Content-Type: application/json
+
+{
+    "event": 1
+}
+
+
+### VIEW MY REGISTRATIONS
+GET http://127.0.0.1:8000/api/registrations/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM5ODM1LCJpYXQiOjE3OTU1Mzk1MzUsImp0aSI6ImVjNjVlOWVlYzFhYjRlOWM5MzkzZmFkOTY4MjVkYjBhIiwidXNlcl9pZCI6IjIifQ.FxvB8lSm_YlWmrLNedO2U_dBjcao251xNNuxxGDTVLA
+
+
+### CHECK EVENT SEAT AVAILABILITY
+GET http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM5OTMzLCJpYXQiOjE3OTU1Mzk2MzMsImp0aSI6ImYwZmQwNGQ1MDNiYjQ5YmViMmNiNjc2YmU2ZDkzZDU4IiwidXNlcl9pZCI6IjQifQ.1OKfLcr_iw8IPk0RHAxK_Zv4Cgv8FkVraXDAOlPwnZA
+
+### CANCEL REGISTRATION
+DELETE http://127.0.0.1:8000/api/registrations/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTM5ODM1LCJpYXQiOjE3OTU1Mzk1MzUsImp0aSI6ImVjNjVlOWVlYzFhYjRlOWM5MzkzZmFkOTY4MjVkYjBhIiwidXNlcl9pZCI6IjIifQ.FxvB8lSm_YlWmrLNedO2U_dBjcao251xNNuxxGDTVLA
+
+
+### REBOOK CANCELLED EVENT
+POST http://127.0.0.1:8000/api/registrations/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQwMzY5LCJpYXQiOjE3OTU1NDAwNjksImp0aSI6ImQ1OGJkYzMwNjI4YTQ0OGVhYmUxOTk2MjNmZWU4ODYzIiwidXNlcl9pZCI6IjIifQ.zq0g-XN4H6FPqNP5gs7qUkJT-i5vaD2RRMsuGoolUas
+Content-Type: application/json
+
+{
+    "event": 1
+}
+
+### INCREASE EVENT CAPACITY
+PUT http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQxNTAzLCJpYXQiOjE3OTU1NDEyMDMsImp0aSI6IjZkZTNiMTBhM2Y3YTRkODdhMDQzMTQyYjJkNzM4YmJkIiwidXNlcl9pZCI6IjQifQ.Wq7EPEkQMZpdbrwS1fCZmG66J10UOWFfubcqLOcJawU
+Content-Type: application/json
+
+{
+    "capacity": 250
+}
+
+### TEST CAPACITY VALIDATION
+PUT http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQxNTAzLCJpYXQiOjE3OTU1NDEyMDMsImp0aSI6IjZkZTNiMTBhM2Y3YTRkODdhMDQzMTQyYjJkNzM4YmJkIiwidXNlcl9pZCI6IjQifQ.Wq7EPEkQMZpdbrwS1fCZmG66J10UOWFfubcqLOcJawU
+Content-Type: application/json
+
+{
+    "capacity": 0
+}
+
+
+### Test Event Capacity Exceeding Venue Capacity
+PUT http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQxODE5LCJpYXQiOjE3OTU1NDE1MTksImp0aSI6IjMyMGQwZGM1OTQ3ODRlZDE4NzRhOWJkYTliNWQ4ZTIyIiwidXNlcl9pZCI6IjQifQ.t85EmMeOlPzNW3mtmOksfyHIb_YECAXZAu1xngWLaAY
+Content-Type: application/json
+
+{
+    "capacity": 1300
+}
+
+
+### Test Negative Ticket Price
+PUT http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQxODE5LCJpYXQiOjE3OTU1NDE1MTksImp0aSI6IjMyMGQwZGM1OTQ3ODRlZDE4NzRhOWJkYTliNWQ4ZTIyIiwidXNlcl9pZCI6IjQifQ.t85EmMeOlPzNW3mtmOksfyHIb_YECAXZAu1xngWLaAY
+Content-Type: application/json
+
+{
+    "ticket_price": -500
+}
+
+
+### Delete Event With Registrations
+DELETE http://127.0.0.1:8000/api/events/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQyMTc1LCJpYXQiOjE3OTU1NDE4NzUsImp0aSI6IjM0ZDdmYjdmYTUzODQ5NDM5MGVhZmFkZGEzYjZmNWJlIiwidXNlcl9pZCI6IjQifQ.m-hoVDPBvUblXu2rhGoFQxCpN_mWuQpfY2I3bgkYXlU
+
+### Delete Event Without Registrations (Event 2)
+DELETE http://127.0.0.1:8000/api/events/2/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NTQyMTc1LCJpYXQiOjE3OTU1NDE4NzUsImp0aSI6IjM0ZDdmYjdmYTUzODQ5NDM5MGVhZmFkZGEzYjZmNWJlIiwidXNlcl9pZCI6IjQifQ.m-hoVDPBvUblXu2rhGoFQxCpN_mWuQpfY2I3bgkYXlU
