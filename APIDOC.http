@@ -1,30 +1,9 @@
-### EVENTHUB - ACCOUNTS API DOCUMENTATION
-# VS Code REST Client (.http)
-#
-# Start server from the directory containing manage.py:
-#     python manage.py runserver
-#
-# IMPORTANT:
-# config/urls.py shows that accounts routes are included under:
-#     api/accounts/
-# Therefore every Accounts API URL below MUST use that prefix.
-#
+
 # Base URL:
 @baseUrl = http://127.0.0.1:8000/api/accounts
-#
-# After each login, copy that response's access token into the matching
-# variable below before running the corresponding protected profile request.
-@adminAccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQyOTIwLCJpYXQiOjE3OTU0NDI2MjAsImp0aSI6IjhlNzljMjU0NDkxYTQ0ZTI4MTU4YTY4MGJjMDczYTMxIiwidXNlcl9pZCI6IjEifQ.bX0O2wsfFspDGfY858Rm_j_Q5OiD9xhHwIAVw3KTzKg
-@attendee1AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ1MDUxLCJpYXQiOjE3OTU0NDQ3NTEsImp0aSI6Ijg2ODUxY2NiYjRlMDRlNjc4MTAyMjA5YzJmMmQ3OWZhIiwidXNlcl9pZCI6IjIifQ.s14xgbfUg12PGyfjR5-1CngwZjZtn1ulHwgvsX0gPBM
 
-@attendee2AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ0OTIwLCJpYXQiOjE3OTU0NDQ2MjAsImp0aSI6IjY5MDhkNjVjZjUwMTQxNjU4ZTY5MTc4Y2NmZTAzNDEyIiwidXNlcl9pZCI6IjIifQ.2dJH5FL7EWIGjcfkqEZbhz6l_-T3qQBeBEgWaNWGM1w.bX0O2wsfFspDGfY858Rm_j_Q5OiD9xhHwIAVw3KTzKg
+# A. REGISTRATION - PUBLIC ENDPOINTS 
 
-@organizerAccessToken = 
-
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzk1NDQ1MjUwLCJpYXQiOjE3OTU0NDQ5NTAsImp0aSI6Ijc4MzAyNjZhOWE3MDRiNmNiMTc5MmIxOTcyYTA3OWFhIiwidXNlcl9pZCI6IjQifQ.cTX31sJl6A00cW7pEkj5BTKWoqfKq7xyEVjdWuB7cig
-###############################################################################
-# A. REGISTRATION - PUBLIC ENDPOINTS (NO TOKEN REQUIRED)
-###############################################################################
 
 ### 1. Register Attendee
 POST {{baseUrl}}/register/
@@ -39,7 +18,6 @@ Content-Type: application/json
     "phone_number": "9876543210"
 }
 
-###
 
 ### 2. Register Organizer
 POST {{baseUrl}}/organizer/register/
@@ -54,125 +32,7 @@ Content-Type: application/json
     "phone_number": "9876543211"
 }
 
-###############################################################################
-# B. LOGIN - EXISTING ACCOUNTS
-# Use the actual password for each account.
-###############################################################################
 
-### 3. Login - Admin/staff account (application role: ATTENDEE)
-POST {{baseUrl}}/login/
-Content-Type: application/json
-
-{
-    "email": "althafjalaludeen8@gmail.com",
-    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
-}
-
-###
-
-### 4. Login - Attendee 01
-POST {{baseUrl}}/login/
-Content-Type: application/json
-
-{
-    "email": "eventuser@gmail.com",
-    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
-}
-
-###
-
-### 5. Login - Attendee 02
-POST {{baseUrl}}/login/
-Content-Type: application/json
-
-{
-    "email": "eventuser02@gmail.com",
-    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
-}
-
-###
-
-### 6. Login - Organizer
-POST {{baseUrl}}/login/
-Content-Type: application/json
-
-{
-    "email": "organizer@gmail.com",
-    "password": "ENTER_THIS_ACCOUNT_PASSWORD"
-}
-
-###############################################################################
-# C. GET PROFILE - PROTECTED ENDPOINT
-# Replace each token variable with the access token from that account's login.
-###############################################################################
-
-### 7. Get Admin/staff account profile
-GET {{baseUrl}}/profile/
-Authorization: Bearer {{adminAccessToken}}
-
-###
-
-### 8. Get Attendee 01 profile
-GET {{baseUrl}}/profile/
-Authorization: Bearer {{attendee1AccessToken}}
-
-###
-
-### 9. Get Attendee 02 profile
-GET {{baseUrl}}/profile/
-Authorization: Bearer {{attendee2AccessToken}}
-
-###
-
-### 10. Get Organizer profile
-GET {{baseUrl}}/profile/
-Authorization: Bearer {{organizerAccessToken}}
-
-###############################################################################
-# D. UPDATE PROFILE - PROTECTED ENDPOINT
-# Example uses the attendee1 token. Change token as required.
-# email and role are read-only in the current UserProfileSerializer.
-###############################################################################
-
-### 11. Update current user's profile
-PUT {{baseUrl}}/profile/
-Content-Type: application/json
-Authorization: Bearer {{attendee1AccessToken}}
-
-{
-    "first_name": "Updated First Name",
-    "last_name": "Updated Last Name",
-    "phone_number": "9999999999"
-}
-
-###############################################################################
-# E. REFRESH JWT ACCESS TOKEN
-###############################################################################
-
-### 12. Refresh access token
-# Copy refresh from the relevant login response into @refreshToken.
-POST {{baseUrl}}/token/refresh/
-Content-Type: application/json
-
-{
-    "refresh": "{{refreshToken}}"
-}
-
-###############################################################################
-# TESTING ORDER
-###############################################################################
-# 1. Run request 3, 4, 5 or 6 to log in.
-# 2. Copy the "access" value from its response into the matching token
-#    variable at the top of this file.
-# 3. Run the corresponding profile GET request.
-# 4. For profile updates, use a valid access token in request 11.
-# 5. For token refresh, copy the "refresh" value into @refreshToken.
-#
-# Token values are intentionally placeholders. Never commit real tokens or
-# passwords to source control.
-#
-# Note: These are the Accounts routes present in accounts/urls.py shared:
-# register/, organizer/register/, login/, token/refresh/, profile/.
 
 
 ### API Request to register a new attendee
